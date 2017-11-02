@@ -5,7 +5,13 @@
     <title>List of variants</title>
 </head>
 <body>
-
+{{if .}}
+<small>
+    {{$var:=index . 0}}
+    location:
+    <a href="/types">types</a> >> <a href="/{{index $var.StripUrl 0}}">{{index $var.StripUrl 0}}</a> >> <a href="{{index $var.StripUrl 1}}">{{index $var.StripUrl 1}}</a>
+</small>
+{{end}}
 <ul>
     {{range .}}
     <li>

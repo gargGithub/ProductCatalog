@@ -55,10 +55,9 @@ func listCompanies(w http.ResponseWriter, req *http.Request){
 		var h []HatchBack
 		db.Debug().Table("hatch_backs").Select("DISTINCT company_name").Find(&h)
 		var hNames = []string{}
-		for _,v:=range h{
-			hNames = append(hNames,v.CompanyName)
+		for _,v:=range h {
+			hNames = append(hNames, v.CompanyName)
 		}
-
 		tpl.ExecuteTemplate(w, "CompaniesListHatch.html", hNames)
 	}
 	if route["type"] == "sedan"{
@@ -78,12 +77,15 @@ func listCars(w http.ResponseWriter, req *http.Request){
 
 	var c = mux.Vars(req)
 	route:="/"+c["type"]+"/"+c["company"]
+	var UrlParts []string
+	UrlParts = append(UrlParts,c["type"],c["company"])
 	if c["type"]=="hatch" {
 		var hCars []HatchBack
 
 		db.Debug().Table("hatch_backs").Select("DISTINCT car_name").Where("company_name=?", c["company"]).Find(&hCars)
 		for i:=0;i<len(hCars);i++{
 			hCars[i].UrlString = route
+			hCars[i].StripUrl = UrlParts
 		}
 
 		tpl.ExecuteTemplate(w, "ListCarsComp.html", hCars)
@@ -95,6 +97,8 @@ func listCars(w http.ResponseWriter, req *http.Request){
 		db.Debug().Table("sedans").Select("DISTINCT car_name").Where("company_name=?", c["company"]).Find(&sCars)
 		for i:=0;i<len(sCars);i++{
 			sCars[i].UrlString = route
+			sCars[i].StripUrl = UrlParts
+
 		}
 
 		tpl.ExecuteTemplate(w, "ListCarsComp.html", sCars)
@@ -181,6 +185,7 @@ type HatchBack struct {
 	SID uint
 	FID uint
 	UrlString string `gorm:"-"`
+	StripUrl []string `gorm:"-"`
 }
 
 
@@ -192,6 +197,7 @@ type Sedan struct {
 	SID uint
 	FID uint
 	UrlString string `gorm:"-"`
+	StripUrl []string `gorm:"-"`
 }
 
 
