@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of variants</title>
+</head>
+<body>
+
+<ul>
+    {{range .}}
+    <li>
+        <a href = "{{.UrlString}}/{{.VariantName}}">{{.VariantName}}</a>
+    </li>
+    {{end}}
+</ul>
+
+
+</body>
+</html>
