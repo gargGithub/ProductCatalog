@@ -109,13 +109,15 @@ func listCars(w http.ResponseWriter, req *http.Request){
 func listVariant(w http.ResponseWriter, req *http.Request)  {
 	c:=mux.Vars(req)
 	route:="/"+c["type"]+"/"+c["company"]+"/"+c["carname"]
-
+	var UrlParts []string
+	UrlParts = append(UrlParts,c["type"],c["company"],c["carname"])
 	if c["type"]=="hatch"{
 		var hVariant []HatchBack
 
 		db.Debug().Table("hatch_backs").Select("DISTINCT variant_name").Where("car_name=? AND company_name=?",c["carname"],c["company"]).Find(&hVariant)
 		for i:=0;i<len(hVariant);i++{
 			hVariant[i].UrlString = route
+			hVariant[i].StripUrl = UrlParts
 		}
 
 		tpl.ExecuteTemplate(w,"VariantList.html",hVariant)
@@ -128,6 +130,8 @@ func listVariant(w http.ResponseWriter, req *http.Request)  {
 		db.Debug().Table("sedans").Select("DISTINCT variant_name").Where("car_name=? AND company_name=?",c["carname"],c["company"]).Find(&sVariant)
 		for i:=0;i<len(sVariant);i++{
 			sVariant[i].UrlString = route
+			sVariant[i].StripUrl = UrlParts
+
 		}
 
 		tpl.ExecuteTemplate(w,"VariantList.html",sVariant)
